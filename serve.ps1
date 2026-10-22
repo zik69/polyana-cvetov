@@ -7,6 +7,8 @@ $listener.Start()
 Write-Host "serving $root on http://localhost:8765/"
 while ($listener.IsListening) {
   try { $ctx = $listener.GetContext() } catch { break }
+  $ctx.Response.KeepAlive = $false
+  $ctx.Response.Headers.Add("Cache-Control", "no-store")
   $path = $ctx.Request.Url.LocalPath.TrimStart('/')
   if (-not $path) { $path = "index.html" }
   $file = Join-Path $root $path
